@@ -1,0 +1,106 @@
+Exercice 3:
+1) SELECT SYSDATE AS "Date" FROM DUAL;
+--- dual est une table spéciale d'une seule colonne et d'une seule ligne présente par défaut dans 
+toutes les installations du SGBD Oracle. Elle est utilisée généralement pour sélectionner les pseudocolonnes telles que SYSDATE ou USER.
+2) SELECT EMPLOYEE_ID, LAST_NAME, SALARY, ROUND(SALARY*1.155) AS "New Salary"
+FROM EMPLOYEES;
+3) Exécuter la requête précédente
+4) SELECT EMPLOYEE_ID, LAST_NAME, SALARY, ROUND(1.155*SALARY) AS "New Salary",
+ROUND(0.155*SALARY) AS "Increase"
+FROM EMPLOYEES ;
+5) SELECT INITCAP(LAST_NAME) AS "Last Name", LENGTH(LAST_NAME) AS "Last Name Length"
+FROM EMPLOYEES
+WHERE SUBSTR(INITCAP(LAST_NAME),1,1) IN ('J','A','M')
+ORDER BY LAST_NAME ASC ;
+6) SELECT INITCAP(LAST_NAME) AS "Last Name", LENGTH(LAST_NAME) AS "Last Name Length"
+FROM EMPLOYEES
+WHERE SUBSTR(INITCAP(LAST_NAME),1,1) = '&START_LETTER';
+7) SELECT INITCAP(LAST_NAME) AS "Last Name", LENGTH(LAST_NAME) AS "Last Name Length"
+FROM EMPLOYEES
+WHERE SUBSTR(INITCAP(LAST_NAME),1,1) = UPPER('&START_LETTER');
+8) SELECT LAST_NAME, ROUND(MONTHS_BETWEEN(SYSDATE, HIRE_DATE)) AS
+"MONTHS_WORKED"
+FROM EMPLOYEES
+ORDER BY MONTHS_WORKED ASC;
+9) SELECT LAST_NAME, LPAD(SALARY,15,'$') FROM EMPLOYEES ;
+10) SELECT RPAD(last_name , 8)||' '|| RPAD(' ', salary/1000+1 , '*') AS 
+"EMPLOYEES_AND_THEIR_SALARIES" 
+FROM EMPLOYEES 
+ORDER BY SALARY DESC;
+11) SELECT last_name , TRUNC ( ( sysdate - hire_date ) / 7 ) AS tenure 
+FROM EMPLOYEES 
+WHERE department_id=90 
+ORDER BY tenure DESC ;
+Exercice 4:
+1) SELECT last_name || ' earnes ' || to_char(salary,'$99,999.99')|| ' monthly but wants ' || 
+to_char(3*salary,'$99,999.99') as "Dream Salaries" 
+FROM employees;
+2) SELECT last_name, hire_date, to_char(next_day(add_months(hire_date, 6), 'LUNDI'), 'Day 
+,"The" ddspth "of" Month YYYY') AS "REVIEW" 
+FROM employees;
+3) SELECT last_name, hire_date, to_char(hire_date, 'Day') AS "Date" 
+FROM employees ORDER BY to_char(hire_date, 'd');
+4) SELECT last_name, NVL(to_char(commission_pct),'No Commission')AS COMM 
+FROM employees;
+5) SELECT job_id, 
+DECODE(job_id , 'IT_PROG', 'A', 'ST_MAN', 'B',' IT_PROG', 'C',' SA_REP',' D',' ST_CLERK',' E',' 0') 
+AS "GRADE" 
+FROM employees;
+6) SELECT job_id, 
+CASE WHEN job_id = 'AD_PRE' THEN 'A' 
+WHEN job_id = 'ST_MAN' THEN 'B' 
+WHEN job_id = 'IT_PROG' THEN 'C' 
+WHEN job_id = 'SA_REP' THEN 'D' 
+WHEN job_id = 'ST_CLERK' THEN 'E' 
+ELSE '0' 
+END as "grade" 
+FROM employees;
+Exercice 5 :
+1) Vrai
+2) Faux
+3) Vrai
+4) SELECT ROUND(MAX(SALARY),0) AS "Maximum", ROUND(MIN(SALARY),0) AS "Minimum",
+ROUND(SUM(SALARY),0) AS "Sum", ROUND(AVG(SALARY),0) AS "Average" FROM 
+EMPLOYEES;
+5)
+a) SELECT JOB_ID, ROUND(MAX(SALARY),0) AS "Maximum", ROUND(MIN(SALARY),0) AS 
+"Minimum", ROUND(SUM(SALARY),0) AS "Sum", ROUND(AVG(SALARY),0) AS "Average"
+FROM EMPLOYEES GROUP BY JOB_ID;
+b) SELECT JOB_ID, COUNT(*) FROM EMPLOYEES GROUP BY JOB_ID;
+6)
+- SELECT JOB_ID, COUNT(*) FROM EMPLOYEES WHERE JOB_ID = '&JOB_ID' Group by 
+JOB_ID;
+- SELECT JOB_ID, COUNT(*) FROM EMPLOYEES
+Group by JOB_ID HAVING JOB_ID = '&JOB_ID';
+7) SELECT COUNT(DISTINCT MANAGER_ID) AS "Number of Managers" FROM EMPLOYEES;
+8) SELECT (MAX(SALARY) - MIN(SALARY)) AS "DIFFERENCE"
+ FROM EMPLOYEES;
+9) SELECT MANAGER_ID, MIN(SALARY)
+ FROM EMPLOYEES
+ WHERE MANAGER_ID is not null
+ GROUP BY MANAGER_ID
+ HAVING MIN(SALARY) > 6000
+ ORDER BY MIN(SALARY) DESC;
+10)
+1- Méthode 1
+SELECT COUNT(*) as "TOTAL",
+ SUM(DECODE(EXTRACT (year FROM HIRE_DATE),'2005',1,0)) as "2005",
+SUM(DECODE(EXTRACT (year FROM HIRE_DATE),'2006',1,0)) as "2006",
+SUM(DECODE(EXTRACT (year FROM HIRE_DATE),'2007',1,0)) as "2007",
+SUM(DECODE(EXTRACT (year FROM HIRE_DATE),'2008',1,0)) as "2008"
+FROM EMPLOYEES;
+2- Méthode 2
+SELECT COUNT(*) as "TOTAL",
+SUM(DECODE(To_char(HIRE_DATE,'YYYY'),'2005',1,0)) as "2005",
+SUM(DECODE(To_char(HIRE_DATE,'YYYY'),'2006',1,0)) as "2006",
+SUM(DECODE(To_char(HIRE_DATE,'YYYY'),'2007',1,0)) as "2007",
+SUM(DECODE(To_char(HIRE_DATE,'YYYY'),'2008',1,0)) as "2008"
+FROM EMPLOYEES;
+11) SELECT JOB_ID AS "Job",
+SUM(DECODE(DEPARTMENT_ID, 20,SALARY,null)) AS "Dept 20",
+SUM(DECODE(DEPARTMENT_ID, 50,SALARY,null)) AS "Dept 50",
+SUM(DECODE(DEPARTMENT_ID, 80,SALARY,null)) AS "Dept 80",
+SUM(DECODE(DEPARTMENT_ID, 90,SALARY,null)) AS "Dept 90",
+SUM(SALARY) AS "Total"
+FROM EMPLOYEES
+GROUP BY JOB_ID;
