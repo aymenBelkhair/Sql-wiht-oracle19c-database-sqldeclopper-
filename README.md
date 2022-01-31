@@ -1,0 +1,1 @@
+# Sql-wiht-oracle19c-database-sqldeclopper-
